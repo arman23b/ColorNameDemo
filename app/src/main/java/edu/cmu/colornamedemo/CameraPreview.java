@@ -40,7 +40,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private final static String TAG = "CameraPreview";
     private final static int RADIUS = 200;
     private final static int TOLERANCE = 50;
-    private final static int TOAST_TEXT_SIZE = 20;
+    private final static int TOAST_TEXT_SIZE = 25;
     private final static int BRIGHTNESS_AMOUNT = 60;
 
     private enum Orientation {
@@ -138,21 +138,36 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
             String bestColor = getMostDominantColour(x, y);
 
-            CharSequence text = bestColor;
-            int duration = Toast.LENGTH_SHORT;
-            if (previousToast != null) {
-                previousToast.cancel();
-            }
-
-            Toast toast = Toast.makeText(mContext, text, duration);
-            toast.setGravity(Gravity.TOP, 0, 0);
-            LinearLayout toastLayout = (LinearLayout) toast.getView();
-            TextView toastTV = (TextView) toastLayout.getChildAt(0);
-            toastTV.setTextSize(TOAST_TEXT_SIZE);
-            toast.show();
-            previousToast = toast;
+            showToast(bestColor);
         }
         return true;
+    }
+
+    private void showToast(String name) {
+        CharSequence text = name;
+        if (previousToast != null) {
+            previousToast.cancel();
+        }
+
+        LinearLayout layout = new LinearLayout(mContext);
+        layout.setBackgroundResource(R.color.trans);
+        layout.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+                                                             LinearLayout.LayoutParams.MATCH_PARENT));
+        TextView tv = new TextView(mContext);
+        tv.setTextColor(Color.WHITE);
+        tv.setTextSize(TOAST_TEXT_SIZE);
+        tv.setGravity(Gravity.TOP);
+        tv.setText(text);
+
+        layout.addView(tv);
+
+        Toast toast = new Toast(mContext);
+        toast.setGravity(Gravity.TOP, 0, 0);
+        toast.setDuration(Toast.LENGTH_SHORT);
+        toast.setView(layout);
+
+        toast.show();
+        previousToast = toast;
     }
 
     private int getColor(int x, int y) {
