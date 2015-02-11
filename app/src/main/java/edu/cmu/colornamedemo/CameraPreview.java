@@ -4,14 +4,16 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.hardware.Camera;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -38,6 +40,8 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private final static String TAG = "CameraPreview";
     private final static int RADIUS = 200;
     private final static int TOLERANCE = 50;
+    private final static int TOAST_TEXT_SIZE = 20;
+    private final static int BRIGHTNESS_AMOUNT = 60;
 
     private enum Orientation {
         ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270
@@ -139,7 +143,12 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             if (previousToast != null) {
                 previousToast.cancel();
             }
+
             Toast toast = Toast.makeText(mContext, text, duration);
+            toast.setGravity(Gravity.TOP, 0, 0);
+            LinearLayout toastLayout = (LinearLayout) toast.getView();
+            TextView toastTV = (TextView) toastLayout.getChildAt(0);
+            toastTV.setTextSize(TOAST_TEXT_SIZE);
             toast.show();
             previousToast = toast;
         }
@@ -211,14 +220,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
                 if ((x - i) * (x - i) + (y - j) * (y - j) <= RADIUS * RADIUS) {
                     // Inside circle region
                     int color = getColor(i, j);
-                    if (!isGray(color)) {
+                    // Make the color brighter
+                    int brighterColor = makeBrighter(color, BRIGHTNESS_AMOUNT);
+                    if (!isGray(brighterColor)) {
                         // Black, white, and gray are not colors
-                        Integer counter = (Integer) colorsMap.get(color);
+                        Integer counter = (Integer) colorsMap.get(brighterColor);
                         if (counter == null) {
                             counter = 0;
                         }
                         counter++;
-                        colorsMap.put(color, counter);
+                        colorsMap.put(brighterColor, counter);
                     } else {
                         Integer counter = (Integer) graysMap.get(color);
                         if (counter == null) {
@@ -244,6 +255,13 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
 
         return result + getBestMatchingColorName(color);
+    }
+
+    private int makeBrighter(int color, int amount) {
+        int red = Math.min(255, Color.red(color) + amount);
+        int green = Math.min(255, Color.green(color) + amount);
+        int blue = Math.min(255, Color.blue(color) + amount);
+        return Color.argb(0, red, green, blue);
     }
 
     private int getMostFrequentColor(Map m) {
