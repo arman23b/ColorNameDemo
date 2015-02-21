@@ -38,10 +38,10 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private Orientation currentOrientation;
 
     private final static String TAG = "CameraPreview";
-    private final static int RADIUS = 200;
+    private final static int RADIUS = 20;
     private final static int TOLERANCE = 50;
     private final static int TOAST_TEXT_SIZE = 25;
-    private final static int BRIGHTNESS_AMOUNT = 60;
+    private final static int BRIGHTNESS_AMOUNT = 40;
 
     private enum Orientation {
         ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270

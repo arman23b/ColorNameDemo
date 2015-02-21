@@ -32,6 +32,7 @@ public class DrawOnTop extends View {
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(10);
         canvas.drawCircle(x, y, radius, p);
+        canvas.drawCircle(x, y, 4*radius, p);
         invalidate();
         super.onDraw(canvas);
     }
