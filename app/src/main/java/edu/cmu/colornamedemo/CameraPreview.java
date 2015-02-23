@@ -41,7 +41,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private final static int RADIUS = 20;
     private final static int TOLERANCE = 50;
     private final static int TOAST_TEXT_SIZE = 25;
-    private final static int BRIGHTNESS_AMOUNT = 40;
+    private final static int BRIGHTNESS_AMOUNT = 60;
 
     private enum Orientation {
         ROTATION_0, ROTATION_90, ROTATION_180, ROTATION_270
@@ -259,17 +259,14 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         }
 
         int color;
-        String result;
 
         if (colorsMap.size() == 0) {
             color = getMostFrequentColor(graysMap);
-            result = "Gray region: ";
         } else {
             color = getMostFrequentColor(colorsMap);
-            result = "Colorful region: ";
         }
 
-        return result + getBestMatchingColorName(color);
+        return getBestMatchingColorName(color);
     }
 
     private int makeBrighter(int color, int amount) {
